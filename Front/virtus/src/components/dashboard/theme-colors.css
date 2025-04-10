@@ -1,0 +1,27 @@
+/* Paleta de colores definida según la imagen */
+:root {
+    --color-lime: #A4B300;        /* Lima brillante */
+    --color-olive: #7C8A2E;       /* Oliva */
+    --color-green-dark: #526C17;  /* Verde oscuro */
+    --color-forest: #0A5127;      /* Verde bosque */
+    --color-cream: #F7F9EB;       /* Crema claro */
+    --color-white: #FFFFFF;       /* Blanco */
+    --color-gray: #B0B0B0;        /* Gris */
+
+    /* Colores complementarios */
+    --color-background: #222222;  /* Fondo oscuro */
+    --color-card-bg: var(--color-cream);
+    --color-text-primary: #333333;
+    --color-text-secondary: #555555;
+
+    /* Colores para componentes específicos */
+    --sidebar-bg: var(--color-background);
+    --sidebar-active: var(--color-forest);
+    --sidebar-hover: var(--color-green-dark);
+    --topbar-bg: var(--color-white);
+    --main-bg: var(--color-cream);
+
+    /* Sombras */
+    --shadow-light: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
