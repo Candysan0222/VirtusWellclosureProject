@@ -1,226 +1,431 @@
-/* Sidebar.css - Armonía de colores renovada */
+/* Sidebar.css - Diseño minimalista y elegante */
+
+:root {
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 70px;
+    --sidebar-bg: #FFFFFF;
+    --sidebar-active: rgba(164, 179, 0, 0.12);
+    --sidebar-hover: rgba(164, 179, 0, 0.08);
+    --sidebar-text: #4B5563;
+    --sidebar-text-active: #0A5127;
+    --sidebar-icon: #A4B300;
+    --sidebar-border: #F3F4F6;
+}
+
+/* Gestión de logos para estado expandido y colapsado */
+.logo-expanded {
+    display: block;
+    transition: opacity 0.3s ease;
+}
+
+.logo-collapsed {
+    display: none;
+    height: 32px; /* Altura fija */
+    max-width: 40px; /* Ancho máximo para evitar que se salga del sidebar */
+    object-fit: contain; /* Mantiene la proporción y asegura que se vea completo */
+    margin: 0 auto; /* Centra la imagen */
+}
+
+.sidebar.collapsed .logo-expanded {
+    display: none;
+}
+
+.sidebar.collapsed .logo-collapsed {
+    display: block;
+}
+
 .sidebar {
-    width: 280px;
+    width: var(--sidebar-width);
     height: 100vh;
-    background: #F7F9EB; /* Cambiado a blanco hueso para un fondo más suave */
-    color: #526C17; /* Verde oscuro para texto principal */
+    background-color: var(--sidebar-bg);
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 100;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    transition: all 0.3s ease;
-    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #B0B0B0 transparent;
-}
-
-.sidebar::-webkit-scrollbar {
-    width: 5px;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-    background-color: #B0B0B0;
-    border-radius: 10px;
+    overflow-x: hidden;
+    border-right: 1px solid var(--sidebar-border);
+    will-change: width;
 }
 
 .sidebar.collapsed {
-    width: 70px;
+    width: var(--sidebar-collapsed-width);
 }
 
-/* Logo o nombre del sistema */
+/* Ocultar los carets cuando el sidebar está colapsado */
+.sidebar.collapsed .nav-caret {
+    display: none;
+}
+
+/* Header del sidebar con logo */
 .sidebar-header {
-    padding: 20px 15px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #B0B0B0;
-    color: #7C8A2E; /* Verde oliva para el título */
-    font-weight: bold;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--sidebar-border);
 }
 
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0;
-    width: 100%;
+.sidebar.collapsed .sidebar-header {
+    padding: 0 8px; /* Reduce el padding horizontal */
+    justify-content: center; /* Centra el contenido */
 }
 
-.sidebar-item {
+.logo-container {
     display: flex;
     align-items: center;
-    width: 100%;
-    cursor: pointer;
-    padding: 0 15px;
+    overflow: hidden;
 }
 
-.sidebar li {
-    margin: 5px 0;
-    position: relative;
-    transition: all 0.2s ease;
-    border-left: 3px solid transparent;
-}
-
-.sidebar li a {
-    color: #526C17; /* Verde oscuro para texto de enlaces */
-    text-decoration: none;
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    width: 100%;
-    transition: all 0.2s ease;
-}
-
-.sidebar .sidebar-icon {
-    font-size: 18px;
-    min-width: 25px;
-    display: flex;
+.sidebar.collapsed .logo-container {
     justify-content: center;
-    color: #A4B300; /* Verde amarillento para iconos */
-    transition: all 0.3s ease;
+    width: 100%;
+    padding: 0;
 }
 
-.sidebar li:hover {
-    background-color: rgba(164, 179, 0, 0.1); /* Fondo hover con transparencia */
-    border-left: 3px solid #A4B300;
+.logo {
+    height: 32px;
+    width: auto;
+    transition: opacity 0.3s ease;
 }
 
-.sidebar li:hover .sidebar-icon {
-    color: #7C8A2E; /* Verde oliva al hacer hover */
-    transform: translateY(-2px);
-}
-
-.sidebar li span {
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    margin-left: 15px;
-    font-weight: 400;
-    opacity: 1;
-}
-
-.sidebar.collapsed li span {
-    opacity: 0;
-    visibility: hidden;
-    width: 0;
-}
-
-/* Tooltip para cuando está colapsado */
-.sidebar.collapsed li:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    left: 75px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #A4B300;
-    color: #FFFFFF;
-    padding: 8px 12px;
-    border-radius: 4px;
+.logo-text {
+    margin-left: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--sidebar-text-active);
+    transition: opacity 0.3s ease, transform 0.3s ease;
     white-space: nowrap;
-    font-size: 14px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-    z-index: 1001;
-    font-weight: 500;
 }
 
-.sidebar.collapsed li:hover::before {
-    content: '';
-    position: absolute;
-    left: 70px;
-    top: 50%;
-    transform: translateY(-50%);
-    border-style: solid;
-    border-width: 6px 6px 6px 0;
-    border-color: transparent #A4B300 transparent transparent;
+.sidebar.collapsed .logo-text {
+    opacity: 0;
+    transform: translateX(10px);
 }
 
-/* Separador */
-.separator {
-    height: 1px;
-    background: linear-gradient(to right, transparent, #B0B0B0, transparent);
-    margin: 10px 15px;
+/* Estilos para cuando se pasa el mouse por encima */
+.sidebar.collapsed:hover {
+    width: var(--sidebar-width);
 }
 
-/* Botón de colapsar */
+.sidebar.collapsed:hover .nav-text,
+.sidebar.collapsed:hover .logo-text,
+.sidebar.collapsed:hover .nav-section-title,
+.sidebar.collapsed:hover .user-info {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 0.1s;
+}
+
+.sidebar.collapsed:hover .logo-collapsed {
+    display: none;
+}
+
+.sidebar.collapsed:hover .logo-expanded {
+    display: block;
+}
+
+/* Botón de toggle para el sidebar - ya no lo necesitamos */
+/*
 .toggle-btn {
-    background-color: #7C8A2E;
-    color: #FFFFFF;
+    background: none;
     border: none;
     width: 32px;
     height: 32px;
-    border-radius: 50%;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.sidebar.collapsed .toggle-btn {
-    transform: rotate(180deg);
-    margin: 10px auto;
+    color: var(--sidebar-text);
+    transition: all 0.2s ease;
 }
 
 .toggle-btn:hover {
-    background-color: #A4B300;
-    transform: scale(1.1);
+    background-color: var(--sidebar-hover);
+    color: var(--sidebar-text-active);
+}
+*/
+
+/* Navegación del sidebar */
+.sidebar-nav {
+    flex: 1;
+    padding: 16px 0;
 }
 
-.sidebar.collapsed .toggle-btn:hover {
-    transform: scale(1.1) rotate(180deg);
+.sidebar-nav::-webkit-scrollbar {
+    width: 4px;
 }
 
-/* Flecha de menús desplegables */
-.arrow-icon {
+.sidebar-nav::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background-color: #D1D5DB;
+    border-radius: 20px;
+}
+
+.nav-section {
+    margin-bottom: 8px;
+    padding: 0 16px;
+}
+
+.nav-section-title {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #9CA3AF;
+    margin-bottom: 8px;
+    padding: 0 12px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .nav-section-title {
+    opacity: 0;
+}
+
+/* Elementos del menú */
+.nav-item {
+    position: relative;
+    margin-bottom: 2px;
+    list-style: none;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    color: var(--sidebar-text);
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    background-color: var(--sidebar-hover);
+    color: var(--sidebar-text-active);
+}
+
+.nav-link.active {
+    background-color: var(--sidebar-active);
+    color: var(--sidebar-text-active);
+    font-weight: 500;
+}
+
+.nav-icon {
+    min-width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sidebar-icon);
+    margin-right: 12px;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover .nav-icon,
+.nav-link.active .nav-icon {
+    color: var(--sidebar-text-active);
+}
+
+.nav-text {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar.collapsed .nav-text {
+    opacity: 0;
+    transform: translateX(10px);
+    width: 0;
+}
+
+/* Indicador para elementos activos */
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 3px;
+    background-color: var(--sidebar-text-active);
+    border-radius: 0 2px 2px 0;
+}
+
+/* Caret para submenús */
+.nav-caret {
     margin-left: auto;
+    transition: transform 0.2s ease, opacity 0.2s ease;
     font-size: 12px;
-    transition: transform 0.3s ease;
-    color: #7C8A2E;
+    opacity: 0.7;
+}
+
+.nav-link.open .nav-caret {
+    transform: rotate(180deg);
 }
 
 /* Submenús */
 .submenu {
-    list-style: none;
-    padding-left: 15px !important;
-    margin: 0;
-    background-color: rgba(247, 249, 235, 0.6); /* Fondo más claro para submenús */
-    border-left: 2px solid #7C8A2E;
-    overflow: hidden;
     max-height: 0;
+    overflow: hidden;
     transition: max-height 0.3s ease;
+    margin-left: 36px;
 }
 
 .submenu.open {
-    max-height: 200px;
+    max-height: 1000px; /* Valor arbitrario grande */
 }
 
-.submenu li {
-    margin: 0;
-    border-left: none !important;
-}
-
-.submenu li a {
-    padding: 10px 15px;
+.submenu .nav-link {
+    padding: 8px 12px;
     font-size: 14px;
-    color: #526C17; /* Verde oscuro para texto de submenús */
 }
 
-.submenu li:hover {
-    background-color: rgba(164, 179, 0, 0.15);
-    border-left: none !important;
+.submenu .nav-icon {
+    font-size: 14px;
 }
 
-/* Estilos de ítem activo */
-.sidebar li.active {
-    background-color: rgba(124, 138, 46, 0.15); /* Verde oliva con transparencia */
-    border-left: 3px solid #0A5127; /* Verde bosque para el indicador activo */
+/* Tooltips para sidebar colapsado */
+.sidebar.collapsed .nav-item {
+    position: relative;
 }
 
-.sidebar li.active .sidebar-icon,
-.sidebar li.active a {
-    color: #0A5127; /* Verde bosque para texto e iconos activos */
+.sidebar.collapsed .nav-item:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #374151;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0.9;
+    z-index: 101;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar.collapsed .nav-item:hover::before {
+    /*content: '5';*/
+    /*position: absolute;*/
+    /*right: 0;*/
+    /*!*top: 50%;*!*/
+    /*transform: translateY(-50%);*/
+    /*border-width: 6px;*/
+    /*border-style: solid;*/
+    /*border-color: transparent #374151 transparent transparent;*/
+    z-index: 101;
+}
+
+/* Sección inferior del sidebar */
+.sidebar-footer {
+    border-top: 1px solid var(--sidebar-border);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-footer {
+    justify-content: center;
+    padding: 16px 0;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--sidebar-icon);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.user-info {
+    margin-left: 12px;
+    overflow: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar.collapsed .user-info {
+    opacity: 0;
+    width: 0;
+    margin-left: 0;
+}
+/* Añade estos estilos para centrar correctamente el avatar en modo colapsado */
+.sidebar.collapsed .user-profile {
+    justify-content: center;
+    padding: 0;
+}
+
+.sidebar.collapsed .avatar {
+    margin: 0 auto;
+    width: 32px; /* Tamaño ligeramente menor */
+    height: 32px; /* Tamaño ligeramente menor */
+}
+
+.user-name {
     font-weight: 500;
+    font-size: 14px;
+    color: var(--sidebar-text-active);
+    white-space: nowrap;
+}
+
+.user-role {
+    font-size: 12px;
+    color: var(--sidebar-text);
+    white-space: nowrap;
+}
+
+/* Media queries para responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* En móviles, es mejor utilizar un enfoque diferente para el sidebar */
+    .sidebar:hover {
+        width: var(--sidebar-width);
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
 }
