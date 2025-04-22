@@ -1,5 +1,4 @@
 import React from 'react';
-import { ResponsiveContainer } from 'recharts';
 
 interface HeatmapChartProps {
     data?: Array<any>;
@@ -8,51 +7,24 @@ interface HeatmapChartProps {
 
 const HeatmapChart: React.FC<HeatmapChartProps> = ({
                                                        data,
-                                                       title = "Gráfico de mapa de calor (datos semanales)"
+                                                       title = "Mapa de calor semanal"
                                                    }) => {
-    // Datos de ejemplo para la semana si no se proporcionan
+    // Datos de ejemplo simplificados
     const defaultData = [
-        { day: 'Lunes', hour0: 12, hour1: 18, hour2: 15, hour3: 10, hour4: 8, hour5: 12, hour6: 25,
-            hour7: 35, hour8: 50, hour9: 60, hour10: 75, hour11: 80,
-            hour12: 85, hour13: 82, hour14: 75, hour15: 65, hour16: 55, hour17: 58,
-            hour18: 62, hour19: 55, hour20: 40, hour21: 30, hour22: 20, hour23: 15
-        },
-        { day: 'Martes', hour0: 10, hour1: 8, hour2: 5, hour3: 5, hour4: 7, hour5: 10, hour6: 20,
-            hour7: 38, hour8: 60, hour9: 65, hour10: 70, hour11: 72,
-            hour12: 70, hour13: 68, hour14: 65, hour15: 60, hour16: 58, hour17: 65,
-            hour18: 70, hour19: 60, hour20: 45, hour21: 32, hour22: 22, hour23: 15
-        },
-        { day: 'Miércoles', hour0: 15, hour1: 12, hour2: 8, hour3: 8, hour4: 10, hour5: 15, hour6: 22,
-            hour7: 40, hour8: 65, hour9: 75, hour10: 85, hour11: 90,
-            hour12: 88, hour13: 85, hour14: 80, hour15: 75, hour16: 72, hour17: 75,
-            hour18: 80, hour19: 70, hour20: 55, hour21: 42, hour22: 30, hour23: 20
-        },
-        { day: 'Jueves', hour0: 18, hour1: 15, hour2: 12, hour3: 10, hour4: 12, hour5: 15, hour6: 25,
-            hour7: 42, hour8: 62, hour9: 72, hour10: 80, hour11: 85,
-            hour12: 82, hour13: 80, hour14: 75, hour15: 70, hour16: 68, hour17: 70,
-            hour18: 75, hour19: 65, hour20: 50, hour21: 38, hour22: 25, hour23: 20
-        },
-        { day: 'Viernes', hour0: 20, hour1: 18, hour2: 15, hour3: 12, hour4: 15, hour5: 20, hour6: 30,
-            hour7: 45, hour8: 68, hour9: 78, hour10: 85, hour11: 90,
-            hour12: 95, hour13: 92, hour14: 88, hour15: 82, hour16: 78, hour17: 80,
-            hour18: 85, hour19: 75, hour20: 60, hour21: 48, hour22: 35, hour23: 25
-        },
-        { day: 'Sábado', hour0: 22, hour1: 20, hour2: 18, hour3: 15, hour4: 18, hour5: 22, hour6: 25,
-            hour7: 35, hour8: 45, hour9: 55, hour10: 65, hour11: 75,
-            hour12: 80, hour13: 85, hour14: 90, hour15: 95, hour16: 98, hour17: 95,
-            hour18: 90, hour19: 80, hour20: 65, hour21: 52, hour22: 42, hour23: 30
-        },
-        { day: 'Domingo', hour0: 25, hour1: 22, hour2: 20, hour3: 18, hour4: 20, hour5: 22, hour6: 20,
-            hour7: 25, hour8: 30, hour9: 40, hour10: 50, hour11: 60,
-            hour12: 70, hour13: 75, hour14: 80, hour15: 85, hour16: 88, hour17: 85,
-            hour18: 80, hour19: 70, hour20: 55, hour21: 45, hour22: 35, hour23: 28
-        },
+        { day: 'Lun', hour0: 12, hour6: 25, hour12: 85, hour18: 62 },
+        { day: 'Mar', hour0: 10, hour6: 20, hour12: 70, hour18: 70 },
+        { day: 'Mie', hour0: 15, hour6: 22, hour12: 88, hour18: 80 },
+        { day: 'Jue', hour0: 18, hour6: 25, hour12: 82, hour18: 75 },
+        { day: 'Vie', hour0: 20, hour6: 30, hour12: 95, hour18: 85 },
+        { day: 'Sab', hour0: 22, hour6: 25, hour12: 80, hour18: 90 },
+        { day: 'Dom', hour0: 25, hour6: 20, hour12: 70, hour18: 80 },
     ];
 
     const chartData = data || defaultData;
 
-    // Horas del día (para el encabezado)
-    const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+    // Reducción de horas mostradas para simplificar
+    const hours = [0, 6, 12, 18].map(h => `${h}:00`);
+    const hourKeys = [0, 6, 12, 18].map(h => `hour${h}`);
 
     // Escala de colores
     const getColor = (value: number) => {
@@ -64,39 +36,43 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
         return '#ef4444'; // Rojo
     };
 
+    // Estilo de texto adaptativo según el valor del fondo
+    const getTextColor = (value: number) => {
+        return value > 50 ? 'white' : 'black';
+    };
+
     return (
-        <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
-            <h3 className="text-lg font-medium text-center mb-2">{title}</h3>
+        <div style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+        }}>
             <div style={{
                 flex: 1,
-                minHeight: '200px',
-                overflow: 'auto',
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                overflow: 'hidden'
             }}>
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '80px repeat(24, minmax(30px, 1fr))',
-                    fontSize: '10px',
-                    position: 'sticky',
-                    top: 0,
-                    backgroundColor: '#fff',
-                    zIndex: 1,
+                    gridTemplateColumns: '30px repeat(4, 1fr)',
+                    fontSize: '8px',
                     borderBottom: '1px solid #e5e7eb'
                 }}>
                     <div style={{
-                        padding: '4px',
+                        padding: '2px',
                         fontWeight: 'bold',
                         textAlign: 'center',
                         borderRight: '1px solid #e5e7eb'
                     }}>
-                        Día / Hora
+                        Día
                     </div>
                     {hours.map((hour, idx) => (
                         <div key={idx} style={{
-                            padding: '4px',
+                            padding: '2px',
                             textAlign: 'center',
-                            borderRight: idx < 23 ? '1px solid #e5e7eb' : 'none'
+                            borderRight: idx < hours.length - 1 ? '1px solid #e5e7eb' : 'none'
                         }}>
                             {hour}
                         </div>
@@ -105,14 +81,14 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '80px repeat(24, minmax(30px, 1fr))',
-                    fontSize: '10px',
+                    gridTemplateColumns: '30px repeat(4, 1fr)',
+                    fontSize: '8px',
                     flex: 1
                 }}>
                     {chartData.map((dayData, dayIdx) => (
                         <React.Fragment key={dayIdx}>
                             <div style={{
-                                padding: '4px',
+                                padding: '2px',
                                 fontWeight: 'bold',
                                 borderBottom: dayIdx < chartData.length - 1 ? '1px solid #e5e7eb' : 'none',
                                 borderRight: '1px solid #e5e7eb',
@@ -123,21 +99,22 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
                                 {dayData.day}
                             </div>
 
-                            {hours.map((_, hourIdx) => {
-                                const value = dayData[`hour${hourIdx}`];
+                            {hourKeys.map((hourKey, hourIdx) => {
+                                const value = dayData[hourKey];
                                 return (
                                     <div
                                         key={hourIdx}
                                         style={{
                                             backgroundColor: getColor(value),
                                             borderBottom: dayIdx < chartData.length - 1 ? '1px solid #e5e7eb' : 'none',
-                                            borderRight: hourIdx < 23 ? '1px solid #e5e7eb' : 'none',
-                                            position: 'relative',
+                                            borderRight: hourIdx < hourKeys.length - 1 ? '1px solid #e5e7eb' : 'none',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            color: value > 50 ? 'white' : 'black',
-                                            fontWeight: 'bold'
+                                            color: getTextColor(value),
+                                            fontWeight: 'bold',
+                                            fontSize: '8px',
+                                            height: '100%'
                                         }}
                                         title={`${dayData.day} ${hours[hourIdx]}: ${value}`}
                                     >
@@ -150,56 +127,27 @@ const HeatmapChart: React.FC<HeatmapChartProps> = ({
                 </div>
             </div>
 
+            {/* Leyenda simplificada */}
             <div style={{
-                marginTop: '8px',
-                fontSize: '12px',
+                marginTop: '2px',
+                fontSize: '7px',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '4px',
+                flexWrap: 'wrap'
             }}>
-                <span>Intensidad:</span>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                }}>
-          <span style={{
-              width: '15px',
-              height: '15px',
-              backgroundColor: '#4ade80',
-              display: 'inline-block',
-              borderRadius: '2px'
-          }}></span>
-                    <span>Baja</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                    <span style={{ width: '8px', height: '8px', backgroundColor: '#4ade80', display: 'inline-block', borderRadius: '1px' }}></span>
+                    <span>Bajo</span>
                 </div>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                }}>
-          <span style={{
-              width: '15px',
-              height: '15px',
-              backgroundColor: '#facc15',
-              display: 'inline-block',
-              borderRadius: '2px'
-          }}></span>
-                    <span>Media</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                    <span style={{ width: '8px', height: '8px', backgroundColor: '#facc15', display: 'inline-block', borderRadius: '1px' }}></span>
+                    <span>Medio</span>
                 </div>
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                }}>
-          <span style={{
-              width: '15px',
-              height: '15px',
-              backgroundColor: '#ef4444',
-              display: 'inline-block',
-              borderRadius: '2px'
-          }}></span>
-                    <span>Alta</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                    <span style={{ width: '8px', height: '8px', backgroundColor: '#ef4444', display: 'inline-block', borderRadius: '1px' }}></span>
+                    <span>Alto</span>
                 </div>
             </div>
         </div>

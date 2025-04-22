@@ -17,7 +17,7 @@ interface RadarChartComponentProps {
 
 const RadarChartComponent: React.FC<RadarChartComponentProps> = ({
                                                                      data,
-                                                                     title = "Gráfico radar (datos quincenales)"
+                                                                     title = ""
                                                                  }) => {
     // Datos de ejemplo quincenales si no se proporcionan
     const defaultData = [
@@ -111,7 +111,8 @@ const RadarChartComponent: React.FC<RadarChartComponentProps> = ({
                 marginTop: '8px',
                 display: 'flex',
                 justifyContent: 'space-around',
-                fontSize: '12px'
+                fontSize: '12px',
+                flexWrap: 'wrap'
             }}>
                 {chartData.map((item, index) => {
                     const diff = item.segundaQuincena - item.primeraQuincena;
@@ -124,7 +125,8 @@ const RadarChartComponent: React.FC<RadarChartComponentProps> = ({
                             alignItems: 'center',
                             backgroundColor: '#f9fafb',
                             padding: '4px 8px',
-                            borderRadius: '4px'
+                            borderRadius: '4px',
+                            margin: '4px'
                         }}>
                             <span style={{ fontWeight: 'bold', fontSize: '10px' }}>{item.categoria}</span>
                             <span style={{
@@ -134,8 +136,8 @@ const RadarChartComponent: React.FC<RadarChartComponentProps> = ({
                                 gap: '2px',
                                 fontSize: '10px'
                             }}>
-                {isImproved ? '▲' : '▼'} {Math.abs(diff)}%
-              </span>
+                                {isImproved ? '▲' : '▼'} {Math.abs(diff)}%
+                            </span>
                         </div>
                     );
                 })}

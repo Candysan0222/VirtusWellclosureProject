@@ -7,99 +7,127 @@ import RealTimeLineChart from '../graficos/RealTimeLineChart';
 import StackedBarChart from '../graficos/StackedBarChart';
 import ScatterChartComponent from '../graficos/ScatterChart';
 import ComparativeBarChart from '../graficos/ComparativeBarChart';
+// Asegúrate de importar tu archivo CSS donde hayas colocado los estilos
+import './PaginaPrincipal.css';
 
-// Componente para una tarjeta de gráfico
 interface ChartCardProps {
     title?: string;
+    headerTitle?: string;
     children: React.ReactNode;
+    verticalText?: string;
+    secondaryTitle?: string;
+    height?: string;
+    width?: string;
 }
 
-const ChartCard: React.FC<ChartCardProps> = ({ title, children }) => {
+const ChartCard: React.FC<ChartCardProps> = ({
+                                                 title,
+                                                 headerTitle,
+                                                 children,
+                                                 verticalText,
+                                                 secondaryTitle,
+                                                 height = '100%',
+                                                 width = '100%'
+                                             }) => {
     return (
-        <div style={{
-            flex: '1 1 calc(50% - 20px)',
-            minWidth: '400px',
-            backgroundColor: '#fff',
-            borderRadius: '8px',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
-            margin: '10px',
-            padding: '15px',
-            height: '400px',
-            display: 'flex',
-            flexDirection: 'column'
-        }}>
-            {title && <h3 style={{
-                margin: '0 0 15px 0',
-                fontSize: '18px',
-                fontWeight: '500',
-                color: '#374151',
-                textAlign: 'center'
-            }}>{title}</h3>}
-            <div style={{ flex: 1 }}>
+        <div className="chart-card" style={{ height, width }}>
+            {headerTitle && <h2 className="header-title">{headerTitle}</h2>}
+
+            {title && <h3 className="chart-title">{title}</h3>}
+
+            {verticalText && (
+                <div className="vertical-text">
+                    {verticalText}
+                </div>
+            )}
+
+            <div className="chart-content" style={{ paddingLeft: verticalText ? '35px' : '0' }}>
                 {children}
             </div>
+
+            {secondaryTitle && (
+                <div className="secondary-title">
+                    {secondaryTitle}
+                </div>
+            )}
         </div>
     );
 };
 
 const PaginaPrincipal: React.FC = () => {
-    return (
-        <div style={{
-            padding: '20px',
-            backgroundColor: '#f9fafb',
-            minHeight: '100vh'
-        }}>
-            <h1 style={{
-                fontSize: '24px',
-                fontWeight: 'bold',
-                marginBottom: '20px',
-                color: '#111827',
-                textAlign: 'center'
-            }}>
-                Dashboard de Monitoreo Ambiental
-            </h1>
+    const columnHeight = '940px';
 
-            <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-                gap: '10px'
-            }}>
-                {/* Primera fila: Calidad del Aire y Nivel de Ruido */}
-                <ChartCard title="Calidad del Aire (PM10, PM2.5)">
+    return (
+        <div className="pagina-principal">
+            {/* Fila superior */}
+            <div className="fila-superior">
+                <ChartCard
+                    title="Calidad del aire"
+                    verticalText="Preparación del pozo">
                     <AirQualityChart />
                 </ChartCard>
-
-                <ChartCard title="Nivel de Ruido (dB)">
+                <ChartCard
+                    title="Nivel de ruido"
+                    verticalText="Preparación del pozo">
                     <NoiseLevelChart />
                 </ChartCard>
+            </div>
 
-                {/* Segunda fila: Mapa de calor y Gráfico radar */}
-                <ChartCard title="Mapa de Calor Semanal">
-                    <HeatmapChart />
-                </ChartCard>
+            {/* Fila inferior */}
+            <div className="fila-inferior">
+                {/* Columna 1 */}
+                <div className="columna" style={{ height: columnHeight, width: '32%' }}>
+                    <ChartCard
+                        title="Contaminación de suelos"
+                        verticalText="suspensión del pozo"
+                        secondaryTitle="Calidad agua subterránea"
+                    >
+                        <HeatmapChart />
+                    </ChartCard>
+                    <ChartCard
+                        title="Contaminación de suelos (Extra)"
+                        verticalText="suspensión del pozo"
+                        secondaryTitle="Real-Time"
+                    >
+                        <RealTimeLineChart />
+                    </ChartCard>
+                </div>
 
-                <ChartCard title="Análisis Quincenal por Categoría">
-                    <RadarChartComponent />
-                </ChartCard>
+                {/* Columna 2 */}
+                <div className="columna" style={{ height: columnHeight, width: '32%' }}>
+                    <ChartCard
+                        title="Emisión de gases"
+                        verticalText="Abandono del pozo"
+                        secondaryTitle="Impacto en biodiversidad"
+                    >
+                        <RadarChartComponent />
+                    </ChartCard>
+                    <ChartCard
+                        title="Emisión acumulada"
+                        verticalText="Abandono del pozo"
+                        secondaryTitle="Emisiones por zona"
+                    >
+                        <StackedBarChart />
+                    </ChartCard>
+                </div>
 
-                {/* Tercera fila: Gráfico en tiempo real y Barras apiladas */}
-                <ChartCard title="Monitoreo en Tiempo Real">
-                    <RealTimeLineChart />
-                </ChartCard>
-
-                <ChartCard title="Distribución Mensual por Categoría">
-                    <StackedBarChart />
-                </ChartCard>
-
-                {/* Cuarta fila: Gráfico de dispersión y Barras comparativas */}
-                <ChartCard title="Análisis de Correlación Trimestral">
-                    <ScatterChartComponent />
-                </ChartCard>
-
-                <ChartCard title="Comparativa Semestral por Sector">
-                    <ComparativeBarChart />
-                </ChartCard>
+                {/* Columna 3 */}
+                <div className="columna" style={{ height: columnHeight, width: '32%' }}>
+                    <ChartCard
+                        title="Estabilidad estructural"
+                        verticalText="Post-Abandono"
+                        secondaryTitle="Contaminación residual"
+                    >
+                        <ComparativeBarChart />
+                    </ChartCard>
+                    <ChartCard
+                        title="Desviaciones estructurales"
+                        verticalText="Post-Abandono"
+                        secondaryTitle="Análisis de dispersión"
+                    >
+                        <ScatterChartComponent />
+                    </ChartCard>
+                </div>
             </div>
         </div>
     );

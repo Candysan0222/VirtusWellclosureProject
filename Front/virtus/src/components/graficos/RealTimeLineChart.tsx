@@ -19,12 +19,39 @@ interface RealTimeLineChartProps {
 
 const RealTimeLineChart: React.FC<RealTimeLineChartProps> = ({
                                                                  initialData,
-                                                                 title = "Gráfico de líneas en tiempo real",
+                                                                 title = "",
                                                                  maxDataPoints = 20
                                                              }) => {
+    // Estado para controlar la visualización según el tamaño
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [isVerySmallScreen, setIsVerySmallScreen] = useState(false);
+
+    // Efecto para detectar el tamaño de la pantalla
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 640);
+            setIsVerySmallScreen(window.innerWidth < 480);
+        };
+
+        // Llamada inicial
+        handleResize();
+
+        // Establecer el listener
+        window.addEventListener('resize', handleResize);
+
+        // Limpiar el listener cuando el componente se desmonte
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     // Datos iniciales si no se proporcionan
     const defaultData = Array.from({ length: 10 }, (_, index) => ({
-        time: new Date(Date.now() - (9 - index) * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        time: new Date(Date.now() - (9 - index) * 1000).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: isVerySmallScreen ? undefined : '2-digit'
+        }),
         value1: Math.floor(Math.random() * 40) + 30,
         value2: Math.floor(Math.random() * 50) + 20
     }));
@@ -40,7 +67,11 @@ const RealTimeLineChart: React.FC<RealTimeLineChartProps> = ({
     const updateData = () => {
         setData(prevData => {
             const newData = [...prevData];
-            const newTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const newTime = new Date().toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: isVerySmallScreen ? undefined : '2-digit'
+            });
             const newValue1 = Math.floor(Math.random() * 40) + 30;
             const newValue2 = Math.floor(Math.random() * 50) + 20;
 
@@ -84,7 +115,7 @@ const RealTimeLineChart: React.FC<RealTimeLineChartProps> = ({
                 clearInterval(intervalId);
             }
         };
-    }, []); // Array de dependencias vacío para que solo se ejecute una vez al montar
+    }, [isVerySmallScreen]); // Incluimos isVerySmallScreen para que se actualice el formato de hora
 
     // Calcular los valores promedio para las líneas de referencia
     const average1 = data.reduce((sum, item) => sum + item.value1, 0) / data.length;
@@ -100,7 +131,7 @@ const RealTimeLineChart: React.FC<RealTimeLineChartProps> = ({
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: '10px'
+                marginBottom: isVerySmallScreen ? '5px' : '10px'
             }}>
                 <h3 className="text-lg font-medium">{title}</h3>
                 <button
@@ -110,8 +141,8 @@ const RealTimeLineChart: React.FC<RealTimeLineChartProps> = ({
                         color: 'white',
                         border: 'none',
                         borderRadius: '4px',
-                        padding: '4px 8px',
-                        fontSize: '12px',
+                        padding: isVerySmallScreen ? '2px 6px' : '4px 8px',
+                        fontSize: isVerySmallScreen ? '10px' : '12px',
                         cursor: 'pointer'
                     }}
                 >
@@ -119,24 +150,28 @@ const RealTimeLineChart: React.FC<RealTimeLineChartProps> = ({
                 </button>
             </div>
 
-            <div style={{ flex: 1, minHeight: '200px' }}>
+            <div style={{ flex: 1, minHeight: isVerySmallScreen ? '150px' : '200px' }}>
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                         data={data}
                         margin={{
                             top: 5,
-                            right: 30,
-                            left: 20,
+                            right: isVerySmallScreen ? 15 : 30,
+                            left: isVerySmallScreen ? 10 : 20,
                             bottom: 5,
                         }}
                     >
                         <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                         <XAxis
                             dataKey="time"
-                            tick={{ fontSize: 10 }}
-                            tickCount={5}
+                            tick={{ fontSize: isVerySmallScreen ? 8 : 10 }}
+                            tickCount={isVerySmallScreen ? 3 : 5}
+                            height={isVerySmallScreen ? 20 : 30}
                         />
-                        <YAxis tick={{ fontSize: 10 }} />
+                        <YAxis
+                            tick={{ fontSize: isVerySmallScreen ? 8 : 10 }}
+                            width={isVerySmallScreen ? 20 : 30}
+                        />
 
                         <Tooltip
                             contentStyle={{
@@ -148,78 +183,101 @@ const RealTimeLineChart: React.FC<RealTimeLineChartProps> = ({
                         />
 
                         <Legend
-                            wrapperStyle={{ fontSize: '12px' }}
-                            iconSize={10}
+                            wrapperStyle={{ fontSize: isVerySmallScreen ? '10px' : '12px' }}
+                            iconSize={isVerySmallScreen ? 8 : 10}
                             verticalAlign="top"
+                            height={isVerySmallScreen ? 15 : 20}
                         />
 
-                        {/* Líneas de referencia para promedios */}
-                        <ReferenceLine
-                            y={average1}
-                            stroke={color1}
-                            strokeDasharray="3 3"
-                            strokeOpacity={0.6}
-                            label={{
-                                value: `Prom: ${average1.toFixed(1)}`,
-                                position: 'insideBottomRight',
-                                fill: color1,
-                                fontSize: 10
-                            }}
-                        />
+                        {/* Líneas de referencia para promedios - ocultas en pantallas muy pequeñas */}
+                        {!isVerySmallScreen && (
+                            <>
+                                <ReferenceLine
+                                    y={average1}
+                                    stroke={color1}
+                                    strokeDasharray="3 3"
+                                    strokeOpacity={0.6}
+                                    label={{
+                                        value: `Prom: ${average1.toFixed(1)}`,
+                                        position: 'insideBottomRight',
+                                        fill: color1,
+                                        fontSize: 10
+                                    }}
+                                />
 
-                        <ReferenceLine
-                            y={average2}
-                            stroke={color2}
-                            strokeDasharray="3 3"
-                            strokeOpacity={0.6}
-                            label={{
-                                value: `Prom: ${average2.toFixed(1)}`,
-                                position: 'insideTopRight',
-                                fill: color2,
-                                fontSize: 10
-                            }}
-                        />
+                                <ReferenceLine
+                                    y={average2}
+                                    stroke={color2}
+                                    strokeDasharray="3 3"
+                                    strokeOpacity={0.6}
+                                    label={{
+                                        value: `Prom: ${average2.toFixed(1)}`,
+                                        position: 'insideTopRight',
+                                        fill: color2,
+                                        fontSize: 10
+                                    }}
+                                />
+                            </>
+                        )}
 
                         <Line
                             type="monotone"
                             dataKey="value1"
                             stroke={color1}
-                            activeDot={{ r: 4 }}
-                            dot={{ r: 2 }}
+                            activeDot={{ r: isVerySmallScreen ? 3 : 4 }}
+                            dot={{ r: isVerySmallScreen ? 0 : 2 }}
                             name="Sensor 1"
-                            isAnimationActive={false} // Desactivar animación para datos en tiempo real
+                            isAnimationActive={false}
+                            strokeWidth={isVerySmallScreen ? 1.5 : 2}
                         />
 
                         <Line
                             type="monotone"
                             dataKey="value2"
                             stroke={color2}
-                            activeDot={{ r: 4 }}
-                            dot={{ r: 2 }}
+                            activeDot={{ r: isVerySmallScreen ? 3 : 4 }}
+                            dot={{ r: isVerySmallScreen ? 0 : 2 }}
                             name="Sensor 2"
-                            isAnimationActive={false} // Desactivar animación para datos en tiempo real
+                            isAnimationActive={false}
+                            strokeWidth={isVerySmallScreen ? 1.5 : 2}
                         />
                     </LineChart>
                 </ResponsiveContainer>
             </div>
 
-            <div style={{
-                marginTop: '8px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontSize: '12px',
-                color: '#6b7280'
-            }}>
-                <div>
-                    Actualización: {isPaused ? 'En pausa' : 'Tiempo real (1s)'}
+            {/* Información adicional - se oculta o simplifica en pantallas pequeñas */}
+            {!isVerySmallScreen ? (
+                <div style={{
+                    marginTop: '8px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '12px',
+                    color: '#6b7280',
+                    flexWrap: 'wrap'
+                }}>
+                    <div>
+                        Actualización: {isPaused ? 'En pausa' : 'Tiempo real (1s)'}
+                    </div>
+                    {!isSmallScreen && (
+                        <div>
+                            Último valor Sensor 1: <span style={{ fontWeight: 'bold', color: color1 }}>{data[data.length - 1]?.value1 || 'N/A'}</span>
+                        </div>
+                    )}
+                    <div>
+                        Último valor Sensor 2: <span style={{ fontWeight: 'bold', color: color2 }}>{data[data.length - 1]?.value2 || 'N/A'}</span>
+                    </div>
                 </div>
-                <div>
-                    Último valor Sensor 1: <span style={{ fontWeight: 'bold', color: color1 }}>{data[data.length - 1]?.value1 || 'N/A'}</span>
+            ) : (
+                <div style={{
+                    marginTop: '4px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    fontSize: '10px',
+                    color: '#6b7280'
+                }}>
+                    {isPaused ? 'En pausa' : 'Actualización cada 1s'}
                 </div>
-                <div>
-                    Último valor Sensor 2: <span style={{ fontWeight: 'bold', color: color2 }}>{data[data.length - 1]?.value2 || 'N/A'}</span>
-                </div>
-            </div>
+            )}
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
     ScatterChart,
     Scatter,
@@ -20,8 +20,31 @@ interface ScatterChartComponentProps {
 
 const ScatterChartComponent: React.FC<ScatterChartComponentProps> = ({
                                                                          data,
-                                                                         title = "Gráfico de dispersión con líneas de tendencia (datos trimestrales)"
+                                                                         title = ""
                                                                      }) => {
+    // Estado para controlar la visualización según el tamaño
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [isVerySmallScreen, setIsVerySmallScreen] = useState(false);
+
+    // Efecto para detectar el tamaño de la pantalla
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 640);
+            setIsVerySmallScreen(window.innerWidth < 480);
+        };
+
+        // Llamada inicial
+        handleResize();
+
+        // Establecer el listener
+        window.addEventListener('resize', handleResize);
+
+        // Limpiar el listener cuando el componente se desmonte
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     // Datos de ejemplo trimestrales si no se proporcionan
     const defaultData = [
         // Primer trimestre (Q1)
@@ -128,14 +151,14 @@ const ScatterChartComponent: React.FC<ScatterChartComponentProps> = ({
     return (
         <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
             <h3 className="text-lg font-medium text-center mb-2">{title}</h3>
-            <div style={{ flex: 1, minHeight: '200px' }}>
+            <div style={{ flex: 1, minHeight: isVerySmallScreen ? '180px' : '200px' }}>
                 <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                         margin={{
-                            top: 20,
-                            right: 30,
-                            left: 20,
-                            bottom: 10,
+                            top: isVerySmallScreen ? 10 : 20,
+                            right: isVerySmallScreen ? 15 : 30,
+                            left: isVerySmallScreen ? 10 : 20,
+                            bottom: isVerySmallScreen ? 5 : 10,
                         }}
                     >
                         <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
@@ -143,31 +166,33 @@ const ScatterChartComponent: React.FC<ScatterChartComponentProps> = ({
                             type="number"
                             dataKey="x"
                             name="X"
-                            tick={{ fontSize: 10 }}
-                            label={{
+                            tick={{ fontSize: isVerySmallScreen ? 8 : 10 }}
+                            label={!isVerySmallScreen ? {
                                 value: 'Variable X',
                                 position: 'insideBottomRight',
                                 offset: -5,
                                 fontSize: 10
-                            }}
+                            } : undefined}
+                            tickCount={isVerySmallScreen ? 4 : undefined}
                         />
                         <YAxis
                             type="number"
                             dataKey="y"
                             name="Y"
-                            tick={{ fontSize: 10 }}
-                            label={{
+                            tick={{ fontSize: isVerySmallScreen ? 8 : 10 }}
+                            label={!isVerySmallScreen ? {
                                 value: 'Variable Y',
                                 angle: -90,
                                 position: 'insideLeft',
                                 style: { textAnchor: 'middle' },
                                 fontSize: 10
-                            }}
+                            } : undefined}
+                            tickCount={isVerySmallScreen ? 4 : undefined}
                         />
                         <ZAxis
                             type="number"
                             dataKey="z"
-                            range={[40, 160]}
+                            range={isVerySmallScreen ? [20, 100] : [40, 160]}
                             name="Z"
                         />
                         <Tooltip
@@ -175,7 +200,7 @@ const ScatterChartComponent: React.FC<ScatterChartComponentProps> = ({
                                 backgroundColor: '#fff',
                                 border: '1px solid #ccc',
                                 borderRadius: '4px',
-                                fontSize: '12px',
+                                fontSize: isVerySmallScreen ? '10px' : '12px',
                             }}
                             formatter={(value, name, props) => {
                                 if (name === 'Z') return [`${value}`, 'Tamaño (Z)'];
@@ -194,13 +219,11 @@ const ScatterChartComponent: React.FC<ScatterChartComponentProps> = ({
                             }}
                         />
                         <Legend
-                            wrapperStyle={{ fontSize: '12px' }}
-                            payload={[
-                                { value: 'Categoría A', type: 'circle', color: colorA },
-                                { value: 'Categoría B', type: 'circle', color: colorB },
-                                { value: 'Tendencia A', type: 'line', color: colorA },
-                                { value: 'Tendencia B', type: 'line', color: colorB }
-                            ]}
+                            wrapperStyle={{
+                                fontSize: isVerySmallScreen ? '10px' : '12px',
+                                marginTop: isVerySmallScreen ? '2px' : '5px'
+                            }}
+                            iconSize={isVerySmallScreen ? 8 : 10}
                         />
 
                         {/* Puntos de dispersión */}
@@ -217,93 +240,116 @@ const ScatterChartComponent: React.FC<ScatterChartComponentProps> = ({
                             line={{ stroke: 'rgba(0,0,0,0)' }} // Transparente
                         />
 
-                        {/* Líneas de tendencia */}
-                        <Line
-                            dataKey="y"
-                            data={trendLineA}
-                            stroke={colorA}
-                            dot={false}
-                            activeDot={false}
-                            strokeWidth={2}
-                            strokeDasharray="5 5"
-                            name="Tendencia A"
-                            isAnimationActive={false}
-                        />
-                        <Line
-                            dataKey="y"
-                            data={trendLineB}
-                            stroke={colorB}
-                            dot={false}
-                            activeDot={false}
-                            strokeWidth={2}
-                            strokeDasharray="5 5"
-                            name="Tendencia B"
-                            isAnimationActive={false}
-                        />
+                        {/* Líneas de tendencia - solo en pantallas medianas o grandes */}
+                        {!isVerySmallScreen && (
+                            <>
+                                <Line
+                                    dataKey="y"
+                                    data={trendLineA}
+                                    stroke={colorA}
+                                    dot={false}
+                                    activeDot={false}
+                                    strokeWidth={isSmallScreen ? 1.5 : 2}
+                                    strokeDasharray="5 5"
+                                    name="Tendencia A"
+                                    isAnimationActive={false}
+                                />
+                                <Line
+                                    dataKey="y"
+                                    data={trendLineB}
+                                    stroke={colorB}
+                                    dot={false}
+                                    activeDot={false}
+                                    strokeWidth={isSmallScreen ? 1.5 : 2}
+                                    strokeDasharray="5 5"
+                                    name="Tendencia B"
+                                    isAnimationActive={false}
+                                />
+                            </>
+                        )}
                     </ComposedChart>
                 </ResponsiveContainer>
             </div>
 
-            {/* Información de correlación */}
-            <div style={{
-                marginTop: '8px',
-                display: 'flex',
-                justifyContent: 'space-around',
-                fontSize: '12px',
-                backgroundColor: '#f8fafc',
-                padding: '8px',
-                borderRadius: '4px'
-            }}>
+            {/* Información de correlación - simplificada en pantallas pequeñas */}
+            {isVerySmallScreen ? (
                 <div style={{
+                    marginTop: '4px',
                     display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center'
+                    justifyContent: 'center',
+                    fontSize: '10px',
+                    gap: '10px'
+                }}>
+                    <span style={{ color: colorA }}>A: r={correlationA}</span>
+                    <span style={{ color: colorB }}>B: r={correlationB}</span>
+                </div>
+            ) : (
+                <div style={{
+                    marginTop: '8px',
+                    display: 'flex',
+                    justifyContent: 'space-around',
+                    fontSize: isSmallScreen ? '10px' : '12px',
+                    backgroundColor: '#f8fafc',
+                    padding: isSmallScreen ? '4px' : '8px',
+                    borderRadius: '4px',
+                    flexWrap: 'wrap'
                 }}>
                     <div style={{
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
-                        gap: '4px'
+                        margin: '2px'
                     }}>
-            <span style={{
-                width: '10px',
-                height: '10px',
-                backgroundColor: colorA,
-                borderRadius: '50%'
-            }}></span>
-                        <span>Categoría A</span>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                        }}>
+                            <span style={{
+                                width: isSmallScreen ? '8px' : '10px',
+                                height: isSmallScreen ? '8px' : '10px',
+                                backgroundColor: colorA,
+                                borderRadius: '50%'
+                            }}></span>
+                            <span>Categoría A</span>
+                        </div>
+                        <span>Correlación: <strong>{correlationA}</strong></span>
                     </div>
-                    <span>Correlación: <strong>{correlationA}</strong></span>
-                </div>
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center'
-                }}>
                     <div style={{
                         display: 'flex',
+                        flexDirection: 'column',
                         alignItems: 'center',
-                        gap: '4px'
+                        margin: '2px'
                     }}>
-            <span style={{
-                width: '10px',
-                height: '10px',
-                backgroundColor: colorB,
-                borderRadius: '50%'
-            }}></span>
-                        <span>Categoría B</span>
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px'
+                        }}>
+                            <span style={{
+                                width: isSmallScreen ? '8px' : '10px',
+                                height: isSmallScreen ? '8px' : '10px',
+                                backgroundColor: colorB,
+                                borderRadius: '50%'
+                            }}></span>
+                            <span>Categoría B</span>
+                        </div>
+                        <span>Correlación: <strong>{correlationB}</strong></span>
                     </div>
-                    <span>Correlación: <strong>{correlationB}</strong></span>
                 </div>
-            </div>
+            )}
 
-            <div style={{
-                marginTop: '4px',
-                fontSize: '11px',
-                color: '#6b7280',
-                textAlign: 'center'
-            }}>
-                El tamaño de los puntos (Z) representa la magnitud del valor asociado
-            </div>
+            {/* Nota explicativa - solo visible en pantallas normales */}
+            {!isSmallScreen && (
+                <div style={{
+                    marginTop: '4px',
+                    fontSize: '11px',
+                    color: '#6b7280',
+                    textAlign: 'center'
+                }}>
+                    El tamaño de los puntos (Z) representa la magnitud del valor asociado
+                </div>
+            )}
         </div>
     );
 };
