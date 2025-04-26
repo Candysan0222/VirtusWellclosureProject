@@ -1,23 +1,22 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import './Sidebar.css';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faTachometerAlt,
-    faChartPie,
-    faShoppingCart,
+    faChartLine,
+    faMapMarkedAlt,
+    faFileAlt,
+    faDatabase,
+    faUserPlus,
+    faUsers,
     faCogs,
+    faExclamationTriangle,
     faBell,
-    faChevronDown,
-    faAngleLeft,
-    faUserCircle,
-    faSearch,
-    faEnvelope,
-    faCog,
-    faSignOutAlt
+    faChevronDown
 } from '@fortawesome/free-solid-svg-icons';
 
 import logo from '../../assets/logo.png';
-import logoCollapsed from '../../assets/isotipo.png'; // Logo alternativo para sidebar colapsado
+import logoCollapsed from '../../assets/isotipo.png';
 
 interface SidebarProps {
     collapsed: boolean;
@@ -26,7 +25,7 @@ interface SidebarProps {
     currentView: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({collapsed, toggleSidebar, changeView, currentView}) => {
+const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar, changeView, currentView }) => {
     const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({
         analytics: false,
         sales: false,
@@ -43,15 +42,12 @@ const Sidebar: React.FC<SidebarProps> = ({collapsed, toggleSidebar, changeView, 
         }
     };
 
-    // Verificar si una vista está activa
     const isViewActive = (view: string) => currentView === view;
 
-    // Navegación entre vistas
     const handleNavigation = (view: string) => {
         changeView(view);
     };
 
-    // Manejadores para expandir/colapsar al pasar el mouse
     const handleMouseEnter = () => {
         if (collapsed) {
             toggleSidebar();
@@ -64,10 +60,9 @@ const Sidebar: React.FC<SidebarProps> = ({collapsed, toggleSidebar, changeView, 
         }
     };
 
-    // Componente de submenu para evitar repetición de código
     const renderSubmenu = (
         menuKey: string,
-        items: Array<{view: string, label: string}>,
+        items: Array<{ view: string, label: string, icon: any }>,
         isOpen: boolean
     ) => (
         <ul className={`submenu ${isOpen ? 'open' : ''}`}>
@@ -77,6 +72,9 @@ const Sidebar: React.FC<SidebarProps> = ({collapsed, toggleSidebar, changeView, 
                         className={`nav-link ${isViewActive(item.view) ? 'active' : ''}`}
                         onClick={() => handleNavigation(item.view)}
                     >
+                        <span className="nav-icon">
+                            <FontAwesomeIcon icon={item.icon} />
+                        </span>
                         <span className="nav-text">{item.label}</span>
                     </div>
                 </li>
@@ -90,35 +88,24 @@ const Sidebar: React.FC<SidebarProps> = ({collapsed, toggleSidebar, changeView, 
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            {/* Header del Sidebar */}
             <div className="sidebar-header">
                 <div className="logo-container">
                     <img src={logo} alt="Logo de la aplicación" className="logo logo-expanded" />
                     <img src={logoCollapsed} alt="Logo de la aplicación" className="logo logo-collapsed" />
                     <span className="logo-text"></span>
                 </div>
-                {/* Ya no necesitamos el botón de toggle */}
             </div>
 
-            {/* Navegación */}
             <nav className="sidebar-nav">
-                {/* Dashboard */}
                 <div className="nav-section">
-                    <div className="nav-section-title">Principal</div>
                     <ul>
-                        <li
-                            className="nav-item"
-                            data-tooltip="Dashboard"
-                        >
+                        <li className="nav-item" data-tooltip="Dashboard">
                             <div
                                 className={`nav-link ${isViewActive('default') ? 'active' : ''}`}
                                 onClick={() => handleNavigation('default')}
-                                role="button"
-                                tabIndex={0}
-                                aria-current={isViewActive('default') ? 'page' : undefined}
                             >
                                 <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faTachometerAlt}/>
+                                    <FontAwesomeIcon icon={faTachometerAlt} />
                                 </span>
                                 <span className="nav-text">Dashboard</span>
                             </div>
@@ -126,140 +113,91 @@ const Sidebar: React.FC<SidebarProps> = ({collapsed, toggleSidebar, changeView, 
                     </ul>
                 </div>
 
-                {/* Análisis */}
                 <div className="nav-section">
-                    <div className="nav-section-title">Análisis</div>
                     <ul>
-                        <li
-                            className="nav-item"
-                            data-tooltip="Analíticas"
-                        >
+                        <li className="nav-item" data-tooltip="Gráficos">
                             <div
                                 className={`nav-link ${isViewActive('analytics') ? 'active' : ''} ${openMenus.analytics ? 'open' : ''}`}
                                 onClick={() => toggleMenu('analytics')}
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={openMenus.analytics}
                             >
                                 <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faChartPie}/>
+                                    <FontAwesomeIcon icon={faChartLine} />
                                 </span>
-                                <span className="nav-text">Analíticas</span>
-                                <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className="nav-caret"
-                                    aria-hidden="true"
-                                />
+                                <span className="nav-text">Gráficos</span>
+                                <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
                             </div>
                             {renderSubmenu('analytics', [
-                                {view: 'analytics', label: 'Visión General'},
-                                {view: 'analytics_users', label: 'Usuarios'}
+                                { view: 'analytics', label: 'Gráficos', icon: faChartLine },
+                                { view: 'analytics_users', label: 'Mapa de pozos', icon: faMapMarkedAlt }
                             ], openMenus.analytics)}
                         </li>
                     </ul>
                 </div>
 
-                {/* Ventas */}
                 <div className="nav-section">
-                    <div className="nav-section-title">Ventas</div>
                     <ul>
-                        <li
-                            className="nav-item"
-                            data-tooltip="Ventas"
-                        >
+                        <li className="nav-item" data-tooltip="Formularios">
                             <div
                                 className={`nav-link ${isViewActive('sales') ? 'active' : ''} ${openMenus.sales ? 'open' : ''}`}
                                 onClick={() => toggleMenu('sales')}
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={openMenus.sales}
                             >
                                 <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faShoppingCart}/>
+                                    <FontAwesomeIcon icon={faFileAlt} />
                                 </span>
-                                <span className="nav-text">Ventas</span>
-                                <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className="nav-caret"
-                                    aria-hidden="true"
-                                />
+                                <span className="nav-text">Formularios</span>
+                                <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
                             </div>
                             {renderSubmenu('sales', [
-                                {view: 'sales', label: 'Resumen'},
-                                {view: 'sales_regions', label: 'Por Región'}
+                                { view: 'sales', label: 'Formularios', icon: faFileAlt },
+                                { view: 'sales_regions', label: 'Registros pozos', icon: faDatabase }
                             ], openMenus.sales)}
                         </li>
                     </ul>
                 </div>
 
-                {/* Operaciones */}
                 <div className="nav-section">
-                    <div className="nav-section-title">Operaciones</div>
                     <ul>
-                        <li
-                            className="nav-item"
-                            data-tooltip="Operaciones"
-                        >
+                        <li className="nav-item" data-tooltip="Gestión de usuarios">
                             <div
                                 className={`nav-link ${isViewActive('operations') ? 'active' : ''} ${openMenus.operations ? 'open' : ''}`}
                                 onClick={() => toggleMenu('operations')}
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={openMenus.operations}
                             >
                                 <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faCogs}/>
+                                    <FontAwesomeIcon icon={faCogs} />
                                 </span>
-                                <span className="nav-text">Operaciones</span>
-                                <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className="nav-caret"
-                                    aria-hidden="true"
-                                />
+                                <span className="nav-text">Gestión de usuarios</span>
+                                <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
                             </div>
                             {renderSubmenu('operations', [
-                                {view: 'operations', label: 'Estado'},
-                                {view: 'operations_resources', label: 'Recursos'}
+                                { view: 'operations', label: 'Registrar usuario', icon: faUserPlus },
+                                { view: 'operations_resources', label: 'Registros', icon: faUsers }
                             ], openMenus.operations)}
                         </li>
                     </ul>
                 </div>
 
-                {/* Alertas */}
                 <div className="nav-section">
-                    <div className="nav-section-title">Sistemas</div>
                     <ul>
-                        <li
-                            className="nav-item"
-                            data-tooltip="Alertas"
-                        >
+                        <li className="nav-item" data-tooltip="Alertas">
                             <div
                                 className={`nav-link ${isViewActive('alerts') ? 'active' : ''} ${openMenus.alerts ? 'open' : ''}`}
                                 onClick={() => toggleMenu('alerts')}
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={openMenus.alerts}
                             >
                                 <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faBell}/>
+                                    <FontAwesomeIcon icon={faExclamationTriangle} />
                                 </span>
                                 <span className="nav-text">Alertas</span>
-                                <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className="nav-caret"
-                                    aria-hidden="true"
-                                />
+                                <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
                             </div>
                             {renderSubmenu('alerts', [
-                                {view: 'alerts', label: 'Activas'},
-                                {view: 'alerts_history', label: 'Historial'}
+                                { view: 'alerts', label: 'Alertas', icon: faExclamationTriangle },
+                                { view: 'alerts_history', label: 'Notificaciones', icon: faBell }
                             ], openMenus.alerts)}
                         </li>
                     </ul>
                 </div>
             </nav>
 
-            {/* Footer */}
             <div className="sidebar-footer">
                 <div className="user-profile">
                     <div className="avatar" aria-label="Iniciales del usuario">JD</div>
