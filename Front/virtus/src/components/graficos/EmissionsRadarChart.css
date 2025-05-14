@@ -1,0 +1,296 @@
+/* EmissionsRadarChart.css - Versión con título en la esquina superior izquierda */
+
+.radar-chart-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    min-height: 350px; /* Altura mínima base para todos los tamaños */
+}
+
+.chart-wrapper {
+    flex: 1;
+    width: 100%;
+    height: calc(100% - 60px); /* Ajuste para dejar espacio para títulos y notas */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 25px; /* Espacio para el título vertical */
+}
+
+.vertical-title {
+    position: absolute;
+    width: 200px; /* Ancho fijo que será la altura del texto rotado */
+    height: 20px; /* Altura aproximada de la línea de texto */
+    left: -90px; /* Desplazamiento hacia la izquierda (aproximadamente la mitad del ancho) */
+    top: 50%;
+    text-align: center;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    font-size: clamp(10px, 1.8vw, 14px);
+    font-weight: 500;
+    color: #4b5563;
+    white-space: nowrap;
+    letter-spacing: 1px;
+    z-index: 5;
+}
+
+.well-name-top {
+    position: absolute;
+    top: 10px;
+    left: 15px; /* Posición fija en la izquierda */
+    transform: translateX(0); /* Eliminamos la transformación que centraba */
+    color: #0066cc;
+    font-size: clamp(0.9rem, 1.8vw, 1.3rem);
+    font-weight: 600;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+    padding: clamp(2px, 1vw, 6px) clamp(5px, 2vw, 10px);
+    border-radius: 4px;
+    width: max-content;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.well-name {
+    text-align: center;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    font-weight: 600;
+    margin-bottom: clamp(0.5rem, 1.5vw, 1.2rem);
+    color: #0066cc;
+    transition: all 0.3s ease;
+}
+
+.axis-tick {
+    fill: #666;
+}
+
+.font-size-small {
+    font-size: clamp(8px, 2vw, 10px);
+}
+
+.font-size-medium {
+    font-size: clamp(10px, 2.2vw, 12px);
+}
+
+.font-size-large {
+    font-size: clamp(11px, 2.5vw, 14px);
+}
+
+.radar-area {
+    transition: all 0.3s ease;
+}
+
+/* Estilos para la leyenda responsive */
+.responsive-legend {
+    transition: all 0.3s ease;
+}
+
+.responsive-legend text {
+    font-size: inherit !important;
+    font-family: Arial, sans-serif !important;
+}
+
+/* Estilos para el tooltip personalizado */
+.custom-tooltip {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: clamp(6px, 1.5vw, 12px) clamp(8px, 2vw, 14px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: min(250px, 80vw);
+    font-size: clamp(11px, 2vw, 13px);
+    z-index: 1000;
+}
+
+.tooltip-title {
+    font-weight: bold;
+    margin: 0 0 5px;
+    font-size: clamp(11px, 2.2vw, 14px);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 3px;
+}
+
+.tooltip-unit {
+    margin: 2px 0;
+    font-size: clamp(10px, 2vw, 12px);
+    font-style: italic;
+    color: #666;
+}
+
+.tooltip-item {
+    margin: 4px 0;
+    font-size: clamp(10px, 2vw, 12px);
+}
+
+.bottom-note {
+    text-align: center;
+    font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+    font-style: italic;
+    color: #777;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 0 10px;
+}
+
+/* Media queries para diferentes tamaños de pantalla */
+@media (max-width: 575px) {
+    .radar-chart-container {
+        padding: 0.5rem 0.25rem;
+        min-height: 350px; /* Altura mínima para móviles */
+    }
+
+    .vertical-title {
+        display: none;
+    }
+
+    .well-name-top {
+        top: 5px;
+        left: 10px; /* Ajuste para móviles */
+        font-size: 0.9rem;
+        padding: 2px 8px;
+    }
+
+    .chart-wrapper {
+        height: calc(100% - 40px);
+        margin-left: 0; /* Sin margen cuando el título vertical está oculto */
+    }
+
+    .bottom-note {
+        font-size: 0.7rem;
+        margin-top: 2px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+    .radar-chart-container {
+        padding: 0.5rem;
+        min-height: 380px; /* Altura mínima para tablets pequeñas */
+    }
+
+    .vertical-title {
+        left: -80px; /* Ajuste para tablets pequeñas */
+        width: 180px;
+    }
+
+    .chart-wrapper {
+        margin-left: 15px; /* Menos margen en pantallas pequeñas */
+    }
+
+    .well-name-top {
+        left: 15px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .radar-chart-container {
+        padding: 0.75rem;
+        min-height: 400px; /* Altura mínima para tablets */
+    }
+
+    .vertical-title {
+        left: -90px;
+    }
+
+    .chart-wrapper {
+        margin-left: 20px;
+    }
+
+    .well-name-top {
+        left: 20px;
+    }
+}
+
+@media (min-width: 992px) {
+    .radar-chart-container {
+        padding: 1rem;
+        min-height: 420px; /* Altura mínima para escritorio */
+    }
+
+    .vertical-title {
+        left: -90px;
+    }
+
+    .chart-wrapper {
+        margin-left: 25px;
+    }
+
+    .well-name-top {
+        left: 25px;
+    }
+}
+
+/* Para pantallas extra grandes */
+@media (min-width: 1200px) {
+    .radar-chart-container {
+        min-height: 450px; /* Altura mínima para pantallas grandes */
+    }
+
+    .vertical-title {
+        left: -95px;
+        width: 220px;
+        font-size: 14px;
+    }
+
+    .chart-wrapper {
+        margin-left: 30px;
+    }
+
+    .well-name-top {
+        left: 30px;
+    }
+}
+
+/* Estilos para asegurar que la leyenda sea responsiva */
+@media (max-width: 600px) {
+    .recharts-default-legend {
+        text-align: left !important;
+        margin-left: 10px !important;
+    }
+
+    .recharts-legend-item {
+        display: block !important;
+        margin-right: 0 !important;
+        margin-bottom: 4px !important;
+    }
+}
+
+/* Ajustes para forzar una mejor visualización del gráfico radar */
+.recharts-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.recharts-surface {
+    overflow: visible;
+}
+
+/* Ajustes específicos para el radar chart */
+.recharts-polar-grid-concentric-polygon {
+    stroke-width: 1;
+}
+
+.recharts-polar-angle-axis-tick-value {
+    font-weight: 500;
+}
+
+/* Mejora del contraste para las areas del radar */
+.radar-area[name="Antes del Abandono"] {
+    fill-opacity: 0.4 !important;
+    stroke-width: 2 !important;
+}
+
+.radar-area[name="Durante el Abandono"] {
+    fill-opacity: 0.4 !important;
+    stroke-width: 2 !important;
+}
+
+.radar-area[name="Después del Abandono"] {
+    fill-opacity: 0.4 !important;
+    stroke-width: 2 !important;
+}

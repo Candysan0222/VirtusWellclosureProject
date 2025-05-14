@@ -138,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar, changeView,
                     <ul>
                         <li className="nav-item" data-tooltip="Formularios">
                             <div
-                                className={`nav-link ${isViewActive('sales') ? 'active' : ''} ${openMenus.sales ? 'open' : ''}`}
+                                className={`nav-link ${isViewActive('formatos') || isViewActive('sales') ? 'active' : ''} ${openMenus.sales ? 'open' : ''}`}
                                 onClick={() => toggleMenu('sales')}
                             >
                                 <span className="nav-icon">
@@ -148,7 +148,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar, changeView,
                                 <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
                             </div>
                             {renderSubmenu('sales', [
-                                { view: 'sales', label: 'Formularios', icon: faFileAlt },
+                                { view: 'formatos', label: 'Formatos', icon: faFileAlt }, // Cambiado a 'formatos'
                                 { view: 'sales_regions', label: 'Registros pozos', icon: faDatabase }
                             ], openMenus.sales)}
                         </li>

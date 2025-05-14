@@ -1,0 +1,248 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    /*box-sizing: border-box;*/
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* Contenedor principal */
+.alerts-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 1rem auto;
+    border: 0px solid #2196f3;
+    border-radius: 25px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    /*gap: 0px;*/
+    background-color: white;
+}
+
+/* Encabezado */
+.alerts-header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.alerts-header h2 {
+    color: rgb(0, 0, 0);
+    font-weight: normal;
+    font-size: 28px;
+}
+
+/* Sección de notificaciones */
+.notifications-section {
+    flex-grow: 1;
+}
+
+/* Rejilla de alertas */
+.alerts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+/* Caja de alerta individual - exactamente como el wireframe */
+.alert-box {
+    width: auto;
+    height: 70px;
+    border: 2px solid #5c6725;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.alert-box:hover {
+    background-color: rgba(33, 150, 243, 0.05);
+}
+
+/* Contenido de la alerta */
+.alert-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.alert-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+}
+
+.alert-value {
+    display: flex;
+    align-items: center;
+}
+
+.alert-value-number {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2196f3;
+    margin-right: 5px;
+}
+
+.alert-value-unit {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Estado de la alerta */
+.alert-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.status-warning {
+    background-color: #FFC107;
+}
+
+.status-critical {
+    background-color: #F44336;
+}
+
+.status-normal {
+    background-color: #4CAF50;
+}
+
+/* Modal para alertas */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    background-color: #2196f3;
+    color: white;
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal-body p {
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.detail-section h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.detail-section p {
+    margin-bottom: 10px;
+}
+
+.modal-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.primary-btn,
+.secondary-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.primary-btn {
+    background-color: #2196f3;
+    color: white;
+}
+
+.secondary-btn {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+
+/* Adaptaciones responsivas */
+@media screen and (max-width: 600px) {
+    .alerts-container {
+        width: 95%;
+        padding: 15px;
+        border-radius: 20px;
+    }
+
+    .alerts-header h2 {
+        font-size: 24px;
+    }
+
+    .alert-box {
+        padding: 0 15px;
+    }
+
+    .alert-title {
+        font-size: 14px;
+    }
+
+    .alert-value-number {
+        font-size: 16px;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .primary-btn, .secondary-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

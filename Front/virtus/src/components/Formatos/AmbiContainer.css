@@ -1,0 +1,56 @@
+/* Estilos para contener el componente Ambi */
+.ambi-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Sobrescribe el contenedor flex del componente Ambi para que no afecte al layout del dashboard */
+.ambi-container > div {
+    width: 100%;
+}
+
+/* Sobrescribe la barra de navegación de Ambi para evitar conflictos con el sidebar */
+.ambi-container .navbar {
+    display: none !important; /* Oculta el navbar de Ambi ya que ya tenemos Topbar */
+}
+
+/* Corrige posibles conflictos de z-index */
+.ambi-container .card,
+.ambi-container .form,
+.ambi-container .toast-container {
+    z-index: 1; /* Un valor menor que el del sidebar */
+}
+
+/* Asegura que el componente Ambi no desborde */
+.ambi-container .container-fluid {
+    max-width: 100%;
+    padding: 1rem;
+}
+
+/* Previene problemas de márgenes */
+.ambi-container h1,
+.ambi-container h2,
+.ambi-container h3,
+.ambi-container h4,
+.ambi-container h5 {
+    margin-top: 0;
+}
+
+/* Ajusta el scroll para el contenido de Ambi */
+.main-content {
+    height: calc(100vh - 60px); /* Altura total menos altura del Topbar */
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Asegura que los elementos de Bootstrap estén contenidos */
+.ambi-container .toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000; /* Un valor alto pero menor que el del sidebar */
+}

@@ -1,0 +1,40 @@
+.well-code {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+}
+
+.well-code h3 {
+    color: #0066cc; /* Color azul brillante */
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: white;
+    padding: 5px 15px;
+    border-radius: 4px;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Compatibilidad con responsive */
+@media (max-width: 576px) {
+    .well-code h3 {
+        font-size: 1rem;
+        padding: 4px 10px;
+    }
+}
+
+/* Para que la transición sea suave */
+.well-code h3 {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

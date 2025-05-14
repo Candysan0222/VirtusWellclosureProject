@@ -1,0 +1,219 @@
+/* RadarChart.css - Versión completamente responsiva */
+
+.chart-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    padding: clamp(0.25rem, 1vw, 1rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chart-title {
+    text-align: center;
+    font-size: clamp(0.9rem, 2vw, 1.25rem);
+    font-weight: bold;
+    margin-bottom: clamp(0.5rem, 1vw, 1rem);
+    color: #333;
+}
+
+.vertical-label {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: rotate(-90deg) translate(-50%, 0);
+    transform-origin: 0 0;
+    font-size: clamp(9px, 1.5vw, 12px);
+    font-weight: bold;
+    color: #666;
+    white-space: nowrap;
+    z-index: 5;
+}
+
+/* Estilos de la gráfica */
+.line-chart {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.chart-grid {
+    stroke: #eee;
+    stroke-width: clamp(0.5px, 0.1vw, 1px);
+}
+
+/* Estilos de los ejes */
+.x-axis,
+.y-axis {
+    color: #666;
+}
+
+.axis-label {
+    font-weight: normal;
+    margin-bottom: clamp(5px, 1vw, 10px);
+    fill: #555;
+}
+
+.axis-tick {
+    fill: #666;
+}
+
+.font-size-small {
+    font-size: clamp(8px, 1.5vw, 9px);
+}
+
+.font-size-medium {
+    font-size: clamp(9px, 1.8vw, 11px);
+}
+
+.font-size-large {
+    font-size: clamp(10px, 2vw, 12px);
+}
+
+/* Estilos específicos para el eje X e Y */
+.x-axis-label {
+    font-size: clamp(9px, 1.8vw, 12px);
+}
+
+.y-axis-label {
+    font-size: clamp(9px, 1.8vw, 12px);
+}
+
+.x-axis-tick {
+    font-size: clamp(8px, 1.5vw, 10px);
+}
+
+.y-axis-tick {
+    font-size: clamp(8px, 1.5vw, 10px);
+}
+
+/* Tooltip */
+.tooltip-content {
+    font-size: clamp(12px, 2vw, 14px);
+    padding: clamp(6px, 1vw, 8px);
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Leyenda */
+.chart-legend {
+    color: #333;
+    font-size: clamp(9px, 2vw, 12px) !important;
+    margin-bottom: clamp(5px, 1vw, 10px) !important;
+}
+
+.chart-legend .recharts-legend-item-text {
+    font-size: inherit !important;
+}
+
+/* Línea de presión */
+.pressure-line {
+    stroke: #ff7300;
+}
+
+.pressure-line-small {
+    stroke-width: clamp(1px, 0.2vw, 1.5px);
+}
+
+.pressure-line-large {
+    stroke-width: clamp(1.5px, 0.3vw, 2px);
+}
+
+.active-dot {
+    fill: #ff7300;
+    r: clamp(3px, 0.8vw, 6px);
+}
+
+/* Líneas de referencia */
+.reference-line {
+    stroke: #e0e0e0;
+}
+
+.reference-line-small {
+    stroke-width: clamp(0.5px, 0.1vw, 0.8px);
+}
+
+.reference-line-large {
+    stroke-width: clamp(0.8px, 0.15vw, 1px);
+}
+
+/* Media queries para diferentes tamaños de pantalla con alturas definidas */
+@media (max-width: 479px) {
+    .chart-container {
+        min-height: 220px;
+        max-height: 300px;
+    }
+
+    .line-chart .recharts-wrapper {
+        overflow: visible;
+    }
+
+    .chart-legend {
+        margin-top: -5px !important;
+    }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+    .chart-container {
+        min-height: 240px;
+        max-height: 320px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .chart-container {
+        min-height: 260px;
+        max-height: 380px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .chart-container {
+        min-height: 280px;
+        max-height: 420px;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1799px) {
+    .chart-container {
+        min-height: 300px;
+        max-height: 450px;
+    }
+}
+
+@media (min-width: 1800px) {
+    .chart-container {
+        min-height: 320px;
+        max-height: 500px;
+    }
+}
+
+/* Estilos específicos para responsive en la leyenda */
+@media (max-width: 600px) {
+    .recharts-default-legend {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+
+    .recharts-legend-item {
+        margin-right: 10px !important;
+        margin-bottom: 5px !important;
+    }
+}
+
+/* Ajustes para asegurar que la gráfica sea visible en espacios pequeños */
+.recharts-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.recharts-surface {
+    overflow: visible;
+}

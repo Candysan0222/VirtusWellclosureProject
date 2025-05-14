@@ -3,7 +3,7 @@ import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import '../../styles/App.css';
 import logo from '../../assets/logo.png';
 import RecuperarContra from './RecupeContra';
-import Dashboard from '../dashboard/Dashboard';  // Importamos el Dashboard en lugar de DashboardPage
+import Dashboard from '../dashboard/Dashboard';
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -28,6 +28,10 @@ function App() {
         // Si estamos cambiando a la vista de todas las notificaciones, redirigir
         if (viewName === 'all_notifications') {
             navigate('/dashboard/notifications');
+        }
+        // Si cambiamos a la vista de formatos
+        if (viewName === 'formatos') {
+            navigate('/dashboard/formatos');
         }
     };
 
@@ -77,13 +81,43 @@ function App() {
                     }
                 />
 
-                {/* Nueva ruta para la vista de todas las notificaciones */}
+                {/* Ruta para la vista de todas las notificaciones */}
                 <Route
                     path="/dashboard/notifications"
                     element={
                         isAuthenticated ? (
                             <Dashboard
                                 initialView="all_notifications"
+                                onViewChange={changeView}
+                            />
+                        ) : (
+                            <Navigate to="/" />
+                        )
+                    }
+                />
+
+                {/* Ruta para la vista de formatos */}
+                <Route
+                    path="/dashboard/formatos"
+                    element={
+                        isAuthenticated ? (
+                            <Dashboard
+                                initialView="formatos"
+                                onViewChange={changeView}
+                            />
+                        ) : (
+                            <Navigate to="/" />
+                        )
+                    }
+                />
+
+                {/* Rutas para formatos específicos */}
+                <Route
+                    path="/formato/:id"
+                    element={
+                        isAuthenticated ? (
+                            <Dashboard
+                                initialView="formatos"
                                 onViewChange={changeView}
                             />
                         ) : (

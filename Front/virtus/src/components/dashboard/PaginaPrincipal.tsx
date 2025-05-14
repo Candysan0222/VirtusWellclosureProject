@@ -1,12 +1,11 @@
 import React from 'react';
-import AirQualityChart from '../graficos/AirQualityChart';
-import NoiseLevelChart from '../graficos/NoiseLevelChart';
+// ajusta la ruta si es diferente
 import HeatmapChart from '../graficos/HeatmapChart';
 import RadarChartComponent from '../graficos/RadarChart';
-import RealTimeLineChart from '../graficos/RealTimeLineChart';
-import StackedBarChart from '../graficos/StackedBarChart';
-import ScatterChartComponent from '../graficos/ScatterChart';
+import EmissionsRadarChart from '../graficos/EmissionsRadarChart';
+import WellRadarEmissionsChart from "../graficos/WellRadarEmissionsChart";
 import ComparativeBarChart from '../graficos/ComparativeBarChart';
+import Alerts from "../graficos/Alerts";
 // Asegúrate de importar tu archivo CSS donde hayas colocado los estilos
 import './PaginaPrincipal.css';
 
@@ -26,25 +25,21 @@ const ChartCard: React.FC<ChartCardProps> = ({
                                                  children,
                                                  verticalText,
                                                  secondaryTitle,
-                                                 height = '100%',
+                                                 height = 'auto',
                                                  width = '100%'
                                              }) => {
     return (
         <div className="chart-card" style={{ height, width }}>
             {headerTitle && <h2 className="header-title">{headerTitle}</h2>}
-
             {title && <h3 className="chart-title">{title}</h3>}
-
             {verticalText && (
                 <div className="vertical-text">
                     {verticalText}
                 </div>
             )}
-
             <div className="chart-content" style={{ paddingLeft: verticalText ? '35px' : '0' }}>
                 {children}
             </div>
-
             {secondaryTitle && (
                 <div className="secondary-title">
                     {secondaryTitle}
@@ -55,77 +50,30 @@ const ChartCard: React.FC<ChartCardProps> = ({
 };
 
 const PaginaPrincipal: React.FC = () => {
-    const columnHeight = '940px';
-
     return (
         <div className="pagina-principal">
-            {/* Fila superior */}
-            <div className="fila-superior">
-                <ChartCard
-                    title="Calidad del aire"
-                    verticalText="Preparación del pozo">
-                    <AirQualityChart />
-                </ChartCard>
-                <ChartCard
-                    title="Nivel de ruido"
-                    verticalText="Preparación del pozo">
-                    <NoiseLevelChart />
-                </ChartCard>
-            </div>
-
-            {/* Fila inferior */}
-            <div className="fila-inferior">
-                {/* Columna 1 */}
-                <div className="columna" style={{ height: columnHeight, width: '32%' }}>
-                    <ChartCard
-                        title="Contaminación de suelos"
-                        verticalText="suspensión del pozo"
-                        secondaryTitle="Calidad agua subterránea"
-                    >
-                        <HeatmapChart />
-                    </ChartCard>
-                    <ChartCard
-                        title="Contaminación de suelos (Extra)"
-                        verticalText="suspensión del pozo"
-                        secondaryTitle="Real-Time"
-                    >
-                        <RealTimeLineChart />
-                    </ChartCard>
-                </div>
-
-                {/* Columna 2 */}
-                <div className="columna" style={{ height: columnHeight, width: '32%' }}>
-                    <ChartCard
-                        title="Emisión de gases"
-                        verticalText="Abandono del pozo"
-                        secondaryTitle="Impacto en biodiversidad"
-                    >
+            {/* Grid layout container */}
+            <div className="dashboard-grid">
+                {/* Primera columna - gráficos principales (izquierda) */}
+                <div className="dashboard-column main-column">
+                    <ChartCard title="Datos de Rendimiento">
                         <RadarChartComponent />
                     </ChartCard>
-                    <ChartCard
-                        title="Emisión acumulada"
-                        verticalText="Abandono del pozo"
-                        secondaryTitle="Emisiones por zona"
-                    >
-                        <StackedBarChart />
+
+                    <ChartCard>
+                        <EmissionsRadarChart />
+                    </ChartCard>
+
+                    <ChartCard>
+                        <WellRadarEmissionsChart />
                     </ChartCard>
                 </div>
 
-                {/* Columna 3 */}
-                <div className="columna" style={{ height: columnHeight, width: '32%' }}>
+                {/* Segunda columna - gráficos secundarios (derecha) */}
+                <div className="dashboard-column side-column">
                     <ChartCard
-                        title="Estabilidad estructural"
-                        verticalText="Post-Abandono"
-                        secondaryTitle="Contaminación residual"
                     >
-                        <ComparativeBarChart />
-                    </ChartCard>
-                    <ChartCard
-                        title="Desviaciones estructurales"
-                        verticalText="Post-Abandono"
-                        secondaryTitle="Análisis de dispersión"
-                    >
-                        <ScatterChartComponent />
+                        <Alerts />
                     </ChartCard>
                 </div>
             </div>
