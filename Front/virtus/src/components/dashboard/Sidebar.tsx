@@ -25,57 +25,107 @@ interface SidebarProps {
     currentView: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar, changeView, currentView }) => {
-    const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({
-        analytics: false,
-        sales: false,
-        operations: false,
-        alerts: false
-    });
+interface MenuItem {
+    id: string;
+    icon: any;
+    label: string;
+    view: string;
+    hasSubmenu: boolean;
+    submenu: Array<{ view: string, label: string, icon: any }>;
+}
 
-    const toggleMenu = (menu: string) => {
-        if (!collapsed) {
-            setOpenMenus(prev => ({
-                ...prev,
-                [menu]: !prev[menu]
-            }));
-        }
-    };
+const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar, changeView, currentView }) => {
+    const [hoveredSidebar, setHoveredSidebar] = useState(false);
+    const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
+
+    // Determina si el sidebar debe mostrarse expandido según el estado de hover
+    const isSidebarExpanded = !collapsed || hoveredSidebar;
+    const sidebarClassName = `sidebar ${!isSidebarExpanded ? 'collapsed' : ''}`;
 
     const isViewActive = (view: string) => currentView === view;
 
-    const handleNavigation = (view: string) => {
+    const handleNavigation = (view: string, event: React.MouseEvent) => {
+        event.stopPropagation();
         changeView(view);
-    };
-
-    const handleMouseEnter = () => {
-        if (collapsed) {
+        if (window.innerWidth <= 768) {
             toggleSidebar();
         }
     };
 
-    const handleMouseLeave = () => {
-        if (!collapsed) {
-            toggleSidebar();
+    const menuItems: MenuItem[] = [
+        {
+            id: 'dashboard',
+            icon: faTachometerAlt,
+            label: 'Dashboard',
+            view: 'default',
+            hasSubmenu: false,
+            submenu: []
+        },
+        {
+            id: 'analytics',
+            icon: faChartLine,
+            label: 'Gráficos',
+            view: 'analytics',
+            hasSubmenu: true,
+            submenu: [
+                { view: 'analytics', label: 'Gráficos', icon: faChartLine },
+                { view: 'analytics_users', label: 'Mapa de pozos', icon: faMapMarkedAlt }
+            ]
+        },
+        {
+            id: 'sales',
+            icon: faFileAlt,
+            label: 'Formularios',
+            view: 'formatos',
+            hasSubmenu: true,
+            submenu: [
+                { view: 'formatos', label: 'Formatos', icon: faFileAlt },
+                { view: 'sales_regions', label: 'Registros pozos', icon: faDatabase }
+            ]
+        },
+        {
+            id: 'operations',
+            icon: faCogs,
+            label: 'Gestión de usuarios',
+            view: 'operations',
+            hasSubmenu: true,
+            submenu: [
+                { view: 'operations', label: 'Registrar usuario', icon: faUserPlus },
+                { view: 'operations_resources', label: 'Registros', icon: faUsers }
+            ]
+        },
+        {
+            id: 'alerts',
+            icon: faExclamationTriangle,
+            label: 'Alertas',
+            view: 'alerts',
+            hasSubmenu: true,
+            submenu: [
+                { view: 'alerts', label: 'Alertas', icon: faExclamationTriangle },
+                { view: 'alerts_history', label: 'Notificaciones', icon: faBell }
+            ]
         }
-    };
+    ];
 
     const renderSubmenu = (
         menuKey: string,
-        items: Array<{ view: string, label: string, icon: any }>,
-        isOpen: boolean
+        items: Array<{ view: string, label: string, icon: any }>
     ) => (
-        <ul className={`submenu ${isOpen ? 'open' : ''}`}>
+        <ul className={`submenu ${(hoveredMenu === menuKey && isSidebarExpanded) ? 'open' : ''}`}>
             {items.map(item => (
-                <li className="nav-item" key={item.view}>
+                <li className="nav-item" key={item.view} data-tooltip={item.label}>
                     <div
                         className={`nav-link ${isViewActive(item.view) ? 'active' : ''}`}
-                        onClick={() => handleNavigation(item.view)}
+                        onClick={(e) => handleNavigation(item.view, e)}
                     >
-                        <span className="nav-icon">
-                            <FontAwesomeIcon icon={item.icon} />
-                        </span>
-                        <span className="nav-text">{item.label}</span>
+                        <div className="nav-content">
+                            <div className="nav-icon-container">
+                                <FontAwesomeIcon icon={item.icon} className="nav-icon" />
+                            </div>
+                            <div className="nav-text-container">
+                                <span className="nav-text">{item.label}</span>
+                            </div>
+                        </div>
                     </div>
                 </li>
             ))}
@@ -84,118 +134,59 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar, changeView,
 
     return (
         <aside
-            className={`sidebar ${collapsed ? 'collapsed' : ''}`}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            className={sidebarClassName}
+            onMouseEnter={() => setHoveredSidebar(true)}
+            onMouseLeave={() => {
+                setHoveredSidebar(false);
+                setHoveredMenu(null);
+            }}
         >
             <div className="sidebar-header">
                 <div className="logo-container">
                     <img src={logo} alt="Logo de la aplicación" className="logo logo-expanded" />
-                    <img src={logoCollapsed} alt="Logo de la aplicación" className="logo logo-collapsed" />
-                    <span className="logo-text"></span>
+                    <img src={logoCollapsed} alt="Logo" className="logo logo-collapsed" />
                 </div>
             </div>
 
             <nav className="sidebar-nav">
-                <div className="nav-section">
-                    <ul>
-                        <li className="nav-item" data-tooltip="Dashboard">
-                            <div
-                                className={`nav-link ${isViewActive('default') ? 'active' : ''}`}
-                                onClick={() => handleNavigation('default')}
-                            >
-                                <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faTachometerAlt} />
-                                </span>
-                                <span className="nav-text">Dashboard</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+                {menuItems.map(item => (
+                    <div
+                        className="nav-section"
+                        key={item.id}
+                        onMouseEnter={() => item.hasSubmenu && setHoveredMenu(item.id)}
+                        onMouseLeave={() => item.hasSubmenu && setHoveredMenu(null)}
+                    >
+                        <ul>
+                            <li className="nav-item" data-tooltip={item.label}>
+                                <div
+                                    className={`nav-link ${
+                                        isViewActive(item.view) ||
+                                        item.submenu.some(subItem => isViewActive(subItem.view))
+                                            ? 'active'
+                                            : ''
+                                    }`}
+                                    onClick={(e) => !item.hasSubmenu && handleNavigation(item.view, e)}
+                                >
+                                    <div className="nav-content">
+                                        <div className="nav-icon-container">
+                                            <FontAwesomeIcon icon={item.icon} className="nav-icon" />
+                                        </div>
+                                        <div className="nav-text-container">
+                                            <span className="nav-text">{item.label}</span>
+                                        </div>
+                                        {item.hasSubmenu && (
+                                            <div className="nav-caret-container">
+                                                <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
 
-                <div className="nav-section">
-                    <ul>
-                        <li className="nav-item" data-tooltip="Gráficos">
-                            <div
-                                className={`nav-link ${isViewActive('analytics') ? 'active' : ''} ${openMenus.analytics ? 'open' : ''}`}
-                                onClick={() => toggleMenu('analytics')}
-                            >
-                                <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faChartLine} />
-                                </span>
-                                <span className="nav-text">Gráficos</span>
-                                <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
-                            </div>
-                            {renderSubmenu('analytics', [
-                                { view: 'analytics', label: 'Gráficos', icon: faChartLine },
-                                { view: 'analytics_users', label: 'Mapa de pozos', icon: faMapMarkedAlt }
-                            ], openMenus.analytics)}
-                        </li>
-                    </ul>
-                </div>
-
-                <div className="nav-section">
-                    <ul>
-                        <li className="nav-item" data-tooltip="Formularios">
-                            <div
-                                className={`nav-link ${isViewActive('formatos') || isViewActive('sales') ? 'active' : ''} ${openMenus.sales ? 'open' : ''}`}
-                                onClick={() => toggleMenu('sales')}
-                            >
-                                <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faFileAlt} />
-                                </span>
-                                <span className="nav-text">Formularios</span>
-                                <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
-                            </div>
-                            {renderSubmenu('sales', [
-                                { view: 'formatos', label: 'Formatos', icon: faFileAlt }, // Cambiado a 'formatos'
-                                { view: 'sales_regions', label: 'Registros pozos', icon: faDatabase }
-                            ], openMenus.sales)}
-                        </li>
-                    </ul>
-                </div>
-
-                <div className="nav-section">
-                    <ul>
-                        <li className="nav-item" data-tooltip="Gestión de usuarios">
-                            <div
-                                className={`nav-link ${isViewActive('operations') ? 'active' : ''} ${openMenus.operations ? 'open' : ''}`}
-                                onClick={() => toggleMenu('operations')}
-                            >
-                                <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faCogs} />
-                                </span>
-                                <span className="nav-text">Gestión de usuarios</span>
-                                <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
-                            </div>
-                            {renderSubmenu('operations', [
-                                { view: 'operations', label: 'Registrar usuario', icon: faUserPlus },
-                                { view: 'operations_resources', label: 'Registros', icon: faUsers }
-                            ], openMenus.operations)}
-                        </li>
-                    </ul>
-                </div>
-
-                <div className="nav-section">
-                    <ul>
-                        <li className="nav-item" data-tooltip="Alertas">
-                            <div
-                                className={`nav-link ${isViewActive('alerts') ? 'active' : ''} ${openMenus.alerts ? 'open' : ''}`}
-                                onClick={() => toggleMenu('alerts')}
-                            >
-                                <span className="nav-icon">
-                                    <FontAwesomeIcon icon={faExclamationTriangle} />
-                                </span>
-                                <span className="nav-text">Alertas</span>
-                                <FontAwesomeIcon icon={faChevronDown} className="nav-caret" />
-                            </div>
-                            {renderSubmenu('alerts', [
-                                { view: 'alerts', label: 'Alertas', icon: faExclamationTriangle },
-                                { view: 'alerts_history', label: 'Notificaciones', icon: faBell }
-                            ], openMenus.alerts)}
-                        </li>
-                    </ul>
-                </div>
+                                {item.hasSubmenu && renderSubmenu(item.id, item.submenu)}
+                            </li>
+                        </ul>
+                    </div>
+                ))}
             </nav>
 
             <div className="sidebar-footer">
