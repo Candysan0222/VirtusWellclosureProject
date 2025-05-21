@@ -3,7 +3,8 @@ import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import PaginaPrincipal from './PaginaPrincipal';
 import FormatoGrid from '../Formatos/FormatoGrid';
-import Ambi from '../Formatos/Ambi'; // Importar tu componente Ambi
+import Ambi from '../Formatos/Ambi'; // Importar componente Ambi
+import Home from '../Formatos/home'; // Importar el nuevo componente Home
 import './Dashboard.css';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -76,13 +77,13 @@ const Dashboard: React.FC<DashboardProps> = ({ initialView = 'default', onViewCh
         let formatoRoute = '';
         switch(formatoNumber) {
             case 1:
-                formatoRoute = 'ambiental';
+                formatoRoute = 'home'; // Cambiado de 'ambiental' a 'home'
                 break;
             case 2:
                 formatoRoute = 'perforacion';
                 break;
             case 3:
-                formatoRoute = 'produccion';
+                formatoRoute = 'ambiental'; // Cambiado de 'produccion' a 'ambiental'
                 break;
             case 4:
                 formatoRoute = 'mantenimiento';
@@ -142,8 +143,15 @@ const Dashboard: React.FC<DashboardProps> = ({ initialView = 'default', onViewCh
         if (!currentFormatoId) return null;
 
         switch(currentFormatoId) {
+            case 'home':
+                // Renderizamos el componente Home para el Formato 1
+                return (
+                    <div className="home-container">
+                        <Home />
+                    </div>
+                );
             case 'ambiental':
-                // Envolvemos Ambi en un div con clase especial para contener sus estilos
+                // Ahora Ambi está en el Formato 3
                 return (
                     <div className="ambi-container">
                         <Ambi />

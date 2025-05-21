@@ -50,6 +50,7 @@ const styles = {
 // Interfaces
 interface FormatoButtonProps {
     number: number;
+    label: string;
     onClick: () => void;
 }
 
@@ -58,13 +59,13 @@ interface FormatoGridProps {
 }
 
 // Botón individual para formatos
-const FormatoButton: React.FC<FormatoButtonProps> = ({ number, onClick }) => {
+const FormatoButton: React.FC<FormatoButtonProps> = ({ number, label, onClick }) => {
     return (
         <button
             style={styles.button as React.CSSProperties}
             onClick={onClick}
         >
-            Formato {number}
+            {label}
         </button>
     );
 };
@@ -84,13 +85,13 @@ const FormatoGrid: React.FC<FormatoGridProps> = ({ onFormatoClick }) => {
         // Define las rutas para cada formato
         switch(formatoNumber) {
             case 1:
-                navigate('/formato/ambiental');
+                navigate('/formato/home');
                 break;
             case 2:
                 navigate('/formato/perforacion');
                 break;
             case 3:
-                navigate('/formato/produccion');
+                navigate('/formato/ambiental');
                 break;
             case 4:
                 navigate('/formato/mantenimiento');
@@ -118,29 +119,45 @@ const FormatoGrid: React.FC<FormatoGridProps> = ({ onFormatoClick }) => {
         }
     };
 
+    // Definir los formatos con sus etiquetas
+    const formatos = [
+        { number: 1, label: 'Home' },
+        { number: 2, label: 'Perforación' },
+        { number: 3, label: 'Ambiental' },
+        { number: 4, label: 'Mantenimiento' },
+        { number: 5, label: 'Seguridad' },
+        { number: 6, label: 'Calidad' },
+        { number: 7, label: 'Logística' },
+        { number: 8, label: 'Recursos Humanos' },
+        { number: 9, label: 'Finanzas' },
+        { number: 10, label: 'Administración' }
+    ];
+
     // Generar arrays para las dos columnas
-    const leftColumnFormats = [1, 2, 3, 4, 5];
-    const rightColumnFormats = [6, 7, 8, 9, 10];
+    const leftColumnFormats = formatos.slice(0, 5);
+    const rightColumnFormats = formatos.slice(5, 10);
 
     return (
         <div style={styles.container as React.CSSProperties}>
             <h2 style={styles.title as React.CSSProperties}>Seleccione un Formato</h2>
             <div style={styles.grid as React.CSSProperties}>
                 <div style={styles.column as React.CSSProperties}>
-                    {leftColumnFormats.map((number) => (
+                    {leftColumnFormats.map((formato) => (
                         <FormatoButton
-                            key={number}
-                            number={number}
-                            onClick={() => handleFormatoClick(number)}
+                            key={formato.number}
+                            number={formato.number}
+                            label={formato.label}
+                            onClick={() => handleFormatoClick(formato.number)}
                         />
                     ))}
                 </div>
                 <div style={styles.column as React.CSSProperties}>
-                    {rightColumnFormats.map((number) => (
+                    {rightColumnFormats.map((formato) => (
                         <FormatoButton
-                            key={number}
-                            number={number}
-                            onClick={() => handleFormatoClick(number)}
+                            key={formato.number}
+                            number={formato.number}
+                            label={formato.label}
+                            onClick={() => handleFormatoClick(formato.number)}
                         />
                     ))}
                 </div>
